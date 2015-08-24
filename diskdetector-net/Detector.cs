@@ -38,6 +38,80 @@ namespace DiskDetector
         }
 
         /// <summary>
+        ///     Detect a fixed drive by letter.
+        /// </summary>
+        /// <param name="driveName">A valid drive letter.</param>
+        /// <param name="queryType">The QueryType.</param>
+        /// <param name="useFallbackQuery">Use QueryType.SeekPenalty as fallback.</param>
+        /// <returns>A list of DriveInfoExtended.</returns>
+        /// <exception cref="IOException"></exception>
+        /// <exception cref="UnauthorizedAccessException"></exception>
+        /// <exception cref="DriveNotFoundException"></exception>
+        /// <exception cref="SecurityException"></exception>
+        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="DetectionFailedException"></exception>
+        /// <exception cref="ArgumentNullException"></exception>
+        /// <exception cref="ArgumentOutOfRangeException"></exception>
+        public static DriveInfoExtended DetectFixedDrive(string driveName, QueryType queryType = QueryType.SeekPenalty,
+            bool useFallbackQuery = true)
+        {
+            var driveInfoExtended = new DriveInfoExtended();
+            var logicalDrive = new DriveInfo(driveName);
+            if (logicalDrive.DriveType == DriveType.Fixed)
+            {
+                if (logicalDrive.IsReady)
+                {
+                    var tmp = new DriveInfoExtended
+                    {
+                        DriveFormat = logicalDrive.DriveFormat,
+                        VolumeLabel = logicalDrive.VolumeLabel,
+                        Name = logicalDrive.Name,
+                        DriveType = logicalDrive.DriveType,
+                        AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
+                        TotalSize = logicalDrive.TotalSize,
+                        TotalFreeSpace = logicalDrive.TotalFreeSpace,
+                        RootDirectory = logicalDrive.RootDirectory,
+                        DriveLetter = logicalDrive.Name.Substring(0, 1).ToCharArray()[0]
+                    };
+
+                    var driveId = GetDiskId(tmp.DriveLetter);
+                    if (driveId != -1)
+                    {
+                        tmp.Id = driveId;
+                        if (queryType == QueryType.SeekPenalty)
+                        {
+                            tmp.HardwareType = DetectHardwareTypeBySeekPenalty(driveId);
+                        }
+                        else
+                        {
+                            if (IsAdministrator())
+                            {
+                                tmp.HardwareType = DetectHardwareTypeByRotationRate(driveId);
+                            }
+                            else
+                            {
+                                if (useFallbackQuery)
+                                {
+                                    tmp.HardwareType = DetectHardwareTypeBySeekPenalty(driveId);
+                                }
+                                else
+                                {
+                                    throw new SecurityException(
+                                        "DetectHardwareTypeBySeekPenalty needs administrative access.");
+                                }
+                            }
+                        }
+                        if (tmp.HardwareType != HardwareType.Unknown)
+                        {
+                            driveInfoExtended = tmp;
+                        }
+                    }
+                }
+            }
+            return driveInfoExtended;
+        }
+
+        /// <summary>
         ///     Detect all fixed drives.
         /// </summary>
         /// <param name="queryType">The QueryType.</param>
@@ -72,6 +146,7 @@ namespace DiskDetector
                             AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                             TotalSize = logicalDrive.TotalSize,
                             TotalFreeSpace = logicalDrive.TotalFreeSpace,
+                            RootDirectory = logicalDrive.RootDirectory,
                             DriveLetter = logicalDrive.Name.Substring(0, 1).ToCharArray()[0]
                         };
 

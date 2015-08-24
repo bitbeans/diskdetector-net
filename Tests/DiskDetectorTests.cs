@@ -14,6 +14,34 @@ namespace Tests
     public class DiskDetectorTests
     {
         [Test]
+        public void DetectFixedDriveTest()
+        {
+            var detectedDrive = Detector.DetectFixedDrive("C", QueryType.RotationRate, true);
+            Console.WriteLine("Drive {0}", detectedDrive.Name);
+            Console.WriteLine("  File type: {0}", detectedDrive.DriveType);
+
+            Console.WriteLine("  Volume label: {0}", detectedDrive.VolumeLabel);
+            Console.WriteLine("  File system: {0}", detectedDrive.DriveFormat);
+            Console.WriteLine("  Letter: {0}", detectedDrive.DriveLetter);
+            Console.WriteLine("  HardwareType: {0}", detectedDrive.HardwareType);
+            Console.WriteLine("  Id: {0}", detectedDrive.Id);
+            Console.WriteLine(
+                "  Available space to current user:{0, 15} bytes",
+                detectedDrive.AvailableFreeSpace);
+
+            Console.WriteLine(
+                "  Total available space:          {0, 15} bytes",
+                detectedDrive.TotalFreeSpace);
+
+            Console.WriteLine(
+                "  Total size of drive:            {0, 15} bytes ",
+                detectedDrive.TotalSize);
+
+            Assert.IsNotNull(detectedDrive);
+        }
+
+
+        [Test]
         public void DetectFixedDrivesTest()
         {
             var detectedDrives = Detector.DetectFixedDrives(QueryType.RotationRate, true);

@@ -14,5 +14,7 @@ namespace DiskDetector.Models
         public long TotalSize { get; set; }
         public long AvailableFreeSpace { get; set; }
         public HardwareType HardwareType { get; set; }
+        public DirectoryInfo RootDirectory { get; set; }
+
     }
 }
