@@ -19,8 +19,8 @@ namespace Tests
             var detectedDrive = Detector.DetectFixedDrive("C", QueryType.RotationRate, true);
             Console.WriteLine("Drive {0}", detectedDrive.Name);
             Console.WriteLine("  File type: {0}", detectedDrive.DriveType);
-
             Console.WriteLine("  Volume label: {0}", detectedDrive.VolumeLabel);
+            Console.WriteLine("  UNC Path: {0}", detectedDrive.UncPath);
             Console.WriteLine("  File system: {0}", detectedDrive.DriveFormat);
             Console.WriteLine("  Letter: {0}", detectedDrive.DriveLetter);
             Console.WriteLine("  HardwareType: {0}", detectedDrive.HardwareType);
@@ -51,8 +51,8 @@ namespace Tests
                 {
                     Console.WriteLine("Drive {0}", detectedDrive.Name);
                     Console.WriteLine("  File type: {0}", detectedDrive.DriveType);
-
                     Console.WriteLine("  Volume label: {0}", detectedDrive.VolumeLabel);
+                    Console.WriteLine("  UNC Path: {0}", detectedDrive.UncPath);
                     Console.WriteLine("  File system: {0}", detectedDrive.DriveFormat);
                     Console.WriteLine("  Letter: {0}", detectedDrive.DriveLetter);
                     Console.WriteLine("  HardwareType: {0}", detectedDrive.HardwareType);
@@ -92,17 +92,28 @@ namespace Tests
               Available space to current user:  1250781491200 bytes
               Total available space:            1250781491200 bytes
               Total size of drive:              2000397791232 bytes 
+             Drive Z:\
+              File type: Network
+              Volume label: hubiC
+              UNC Path: \\ExpanDrive\hubiC
+              File system: EXFS
+              Letter: Z
+              HardwareType: Unknown
+              Id: -1
+              Available space to current user:    50000000000 bytes
+              Total available space:              50000000000 bytes
+              Total size of drive:               100000000000 bytes 
             */
         }
 
         [Test]
         public void DetectDriveTest()
         {
-            var detectedDrive = Detector.DetectDrive("G", QueryType.RotationRate, true);
+            var detectedDrive = Detector.DetectDrive("Z", QueryType.RotationRate, true);
             Console.WriteLine("Drive {0}", detectedDrive.Name);
             Console.WriteLine("  File type: {0}", detectedDrive.DriveType);
-
             Console.WriteLine("  Volume label: {0}", detectedDrive.VolumeLabel);
+            Console.WriteLine("  UNC Path: {0}", detectedDrive.UncPath);
             Console.WriteLine("  File system: {0}", detectedDrive.DriveFormat);
             Console.WriteLine("  Letter: {0}", detectedDrive.DriveLetter);
             Console.WriteLine("  HardwareType: {0}", detectedDrive.HardwareType);
@@ -132,8 +143,8 @@ namespace Tests
                 {
                     Console.WriteLine("Drive {0}", detectedDrive.Name);
                     Console.WriteLine("  File type: {0}", detectedDrive.DriveType);
-
                     Console.WriteLine("  Volume label: {0}", detectedDrive.VolumeLabel);
+                    Console.WriteLine("  UNC Path: {0}", detectedDrive.UncPath);
                     Console.WriteLine("  File system: {0}", detectedDrive.DriveFormat);
                     Console.WriteLine("  Letter: {0}", detectedDrive.DriveLetter);
                     Console.WriteLine("  HardwareType: {0}", detectedDrive.HardwareType);

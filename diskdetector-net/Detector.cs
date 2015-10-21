@@ -4,8 +4,10 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Principal;
+using System.Text;
 using DiskDetector.Exceptions;
 using DiskDetector.Models;
+using DiskDetector.Tools;
 using Microsoft.Win32.SafeHandles;
 
 namespace DiskDetector
@@ -66,6 +68,7 @@ namespace DiskDetector
                         DriveFormat = logicalDrive.DriveFormat,
                         VolumeLabel = logicalDrive.VolumeLabel,
                         Name = logicalDrive.Name,
+                        UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                         DriveType = logicalDrive.DriveType,
                         AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                         TotalSize = logicalDrive.TotalSize,
@@ -142,6 +145,7 @@ namespace DiskDetector
                             DriveFormat = logicalDrive.DriveFormat,
                             VolumeLabel = logicalDrive.VolumeLabel,
                             Name = logicalDrive.Name,
+                            UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                             DriveType = logicalDrive.DriveType,
                             AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                             TotalSize = logicalDrive.TotalSize,
@@ -217,6 +221,7 @@ namespace DiskDetector
                         DriveFormat = logicalDrive.DriveFormat,
                         VolumeLabel = logicalDrive.VolumeLabel,
                         Name = logicalDrive.Name,
+                        UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                         DriveType = logicalDrive.DriveType,
                         AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                         TotalSize = logicalDrive.TotalSize,
@@ -256,15 +261,17 @@ namespace DiskDetector
                     }
                 }
             }
-            else if (logicalDrive.DriveType == DriveType.Removable)
+            else
             {
                 if (logicalDrive.IsReady)
                 {
+                    
                     var tmp = new DriveInfoExtended
                     {
                         DriveFormat = logicalDrive.DriveFormat,
                         VolumeLabel = logicalDrive.VolumeLabel,
                         Name = logicalDrive.Name,
+                        UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                         DriveType = logicalDrive.DriveType,
                         AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                         TotalSize = logicalDrive.TotalSize,
@@ -311,6 +318,7 @@ namespace DiskDetector
                             DriveFormat = logicalDrive.DriveFormat,
                             VolumeLabel = logicalDrive.VolumeLabel,
                             Name = logicalDrive.Name,
+                            UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                             DriveType = logicalDrive.DriveType,
                             AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                             TotalSize = logicalDrive.TotalSize,
@@ -350,7 +358,7 @@ namespace DiskDetector
                         }
                     }
                 }
-                else if (logicalDrive.DriveType == DriveType.Removable)
+                else
                 {
                     if (logicalDrive.IsReady)
                     {
@@ -359,6 +367,7 @@ namespace DiskDetector
                             DriveFormat = logicalDrive.DriveFormat,
                             VolumeLabel = logicalDrive.VolumeLabel,
                             Name = logicalDrive.Name,
+                            UncPath = Pathing.GetUNCPath(logicalDrive.Name),
                             DriveType = logicalDrive.DriveType,
                             AvailableFreeSpace = logicalDrive.AvailableFreeSpace,
                             TotalSize = logicalDrive.TotalSize,
@@ -536,6 +545,45 @@ namespace DiskDetector
                 return HardwareType.Unknown;
             }
         }
+
+        [DllImport("mpr.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WNetGetConnection([MarshalAs(UnmanagedType.LPTStr)] string localName, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder remoteName, ref int length);
+
+        private static object strToUnc(string path)
+        {
+            // This sample code assumes you currently have a drive mapped to p:
+
+            // Find out what remote device a local mapping is to
+
+            int rc = 0;
+
+            // Size for the buffer we will use
+
+            int bsize = 200;
+
+            // Create a new stringbuilder, pre-sized as above
+
+            StringBuilder rname = new StringBuilder(bsize);
+
+            // Call the function
+
+            rc = WNetGetConnection("Z:", rname, ref bsize);
+
+        //https://stackoverflow.com/questions/1088752/how-to-programmatically-discover-mapped-network-drives-on-system-and-their-serve
+            //http://www.pinvoke.net/default.aspx/mpr/WNetGetConnection.html
+            int length = 255;
+            /*2250 (0x8CA)
+This network connection does not exist.
+1200 (0x4B0)
+The specified device name is invalid.*/
+            System.Text.StringBuilder UNC = new System.Text.StringBuilder(length);
+            int q = WNetGetConnection("Z:", UNC, ref length);
+            return UNC.ToString();
+        }
+
+        //to get the UNC-Path of a network-drive use something like:
+
+
 
         /// <summary>
         ///     CreateFile to get handle to drive.
@@ -841,5 +889,85 @@ namespace DiskDetector
         private const uint PropertyStandardQuery = 0;
 
         #endregion
+    }
+
+    internal class NativeMethods
+    {
+        /// <summary>
+        /// The type of structure that the function stores in the buffer.
+        /// </summary>
+        public enum InfoLevel
+        {
+            /// <summary>
+            /// The function stores a <see cref="UNIVERSAL_NAME_INFO"/> structure in the
+            /// buffer.
+            /// </summary>
+            UniversalName = 1,
+
+            /// <summary>
+            /// The function stores a <c>REMOTE_NAME_INFO</c> structure in the buffer.
+            /// </summary>
+            /// <remarks>
+            /// Using this level will throw an <see cref="NotSupportedException"/>.
+            /// </remarks>
+            RemoteName = 2
+        }
+
+        /// <summary>
+        /// The <see cref="WNetGetUniversalName(string,int,UNIVERSAL_NAME_INFO,int)"/> function
+        /// takes a drive-based path for a network resource and returns an information
+        /// structure that contains a more universal form of the name.
+        /// </summary>
+        /// <param name="lpLocalPath">A pointer to a constant null-terminated string that
+        /// is a drive-based path for a network resource.</param>
+        /// <param name="dwInfoLevel">The type of structure that the function stores in
+        /// the buffer pointed to by the <paramref name="lpBuffer"/> parameter.</param>
+        /// <param name="lpBuffer">A pointer to a buffer that receives the structure
+        /// specified by the <paramref name="dwInfoLevel"/> parameter.</param>
+        /// <param name="lpBufferSize">A pointer to a variable that specifies the size,
+        /// in bytes, of the buffer pointed to by the <paramref name="lpBuffer"/> parameter.</param>
+        /// <returns>If the function succeeds, the return value is <see cref="NO_ERROR"/>.</returns>
+        [DllImport("mpr.dll", CharSet = CharSet.Auto)]
+        public static extern int WNetGetUniversalName(
+            string lpLocalPath,
+            InfoLevel dwInfoLevel,
+            ref UNIVERSAL_NAME_INFO lpBuffer,
+            ref int lpBufferSize);
+
+        /// <summary>
+        /// The <see cref="WNetGetUniversalName(string,int,IntPtr,int)"/> function
+        /// takes a drive-based path for a network resource and returns an information
+        /// structure that contains a more universal form of the name.
+        /// </summary>
+        /// <param name="lpLocalPath">A pointer to a constant null-terminated string that
+        /// is a drive-based path for a network resource.</param>
+        /// <param name="dwInfoLevel">The type of structure that the function stores in
+        /// the buffer pointed to by the <paramref name="lpBuffer"/> parameter.</param>
+        /// <param name="lpBuffer">A pointer to a buffer that receives the structure
+        /// specified by the <paramref name="dwInfoLevel"/> parameter.</param>
+        /// <param name="lpBufferSize">A pointer to a variable that specifies the size,
+        /// in bytes, of the buffer pointed to by the <paramref name="lpBuffer"/> parameter.</param>
+        /// <returns>If the function succeeds, the return value is <see cref="NO_ERROR"/>.</returns>
+        [DllImport("mpr.dll", CharSet = CharSet.Auto)]
+        public static extern int WNetGetUniversalName(
+            string lpLocalPath,
+            InfoLevel dwInfoLevel,
+            IntPtr lpBuffer,
+            ref int lpBufferSize);
+
+        /// <summary>
+        /// The <see cref="UNIVERSAL_NAME_INFO"/> structure contains a pointer to a
+        /// Universal Naming Convention (UNC) name string for a network resource.
+        /// </summary>
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct UNIVERSAL_NAME_INFO
+        {
+            /// <summary>
+            /// Pointer to the null-terminated UNC name string that identifies a
+            /// network resource.
+            /// </summary>
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpUniversalName;
+        }
     }
 }

@@ -15,6 +15,6 @@ namespace DiskDetector.Models
         public long AvailableFreeSpace { get; set; }
         public HardwareType HardwareType { get; set; }
         public DirectoryInfo RootDirectory { get; set; }
-
+        public string UncPath { get; set; }
     }
 }
