@@ -1,4 +1,4 @@
-#diskdetector-net [![NuGet Version](https://img.shields.io/nuget/v/diskdetector-net.svg?style=flat-square)](https://www.nuget.org/packages/diskdetector-net/) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/bitbeans/diskdetector-net/blob/master/LICENSE.md)
+# diskdetector-net [![NuGet Version](https://img.shields.io/nuget/v/diskdetector-net.svg?style=flat-square)](https://www.nuget.org/packages/diskdetector-net/) [![License](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/bitbeans/diskdetector-net/blob/master/LICENSE.md)
 
 
 Class to detect the hardware type (SSD or HDD) of a hard disk on windows based systems.
