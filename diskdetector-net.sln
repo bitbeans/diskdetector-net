@@ -1,17 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2036
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "diskdetector-net", "diskdetector-net\diskdetector-net.csproj", "{E5326BAC-B062-4E9E-9AC9-5DDE218A32BA}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{E8940389-9D92-4D41-B948-F6A58F84C82E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{97365F76-5C9F-445C-BFBD-58B54F17ED53}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "diskdetector-net", "diskdetector-net\diskdetector-net.csproj", "{8D92F7E8-ACB7-4711-8364-F62D2E3D0247}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{A00FF10D-4EA9-4774-9332-D121BCEEC24F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,16 +19,19 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E5326BAC-B062-4E9E-9AC9-5DDE218A32BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E5326BAC-B062-4E9E-9AC9-5DDE218A32BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E5326BAC-B062-4E9E-9AC9-5DDE218A32BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E5326BAC-B062-4E9E-9AC9-5DDE218A32BA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E8940389-9D92-4D41-B948-F6A58F84C82E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E8940389-9D92-4D41-B948-F6A58F84C82E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E8940389-9D92-4D41-B948-F6A58F84C82E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E8940389-9D92-4D41-B948-F6A58F84C82E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D92F7E8-ACB7-4711-8364-F62D2E3D0247}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D92F7E8-ACB7-4711-8364-F62D2E3D0247}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D92F7E8-ACB7-4711-8364-F62D2E3D0247}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D92F7E8-ACB7-4711-8364-F62D2E3D0247}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A00FF10D-4EA9-4774-9332-D121BCEEC24F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A00FF10D-4EA9-4774-9332-D121BCEEC24F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A00FF10D-4EA9-4774-9332-D121BCEEC24F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A00FF10D-4EA9-4774-9332-D121BCEEC24F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9AE50727-AD0A-441C-AF8B-7F8A416278DA}
 	EndGlobalSection
 EndGlobal
