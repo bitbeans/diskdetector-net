@@ -6,16 +6,16 @@
     <RootNamespace>DiskDetector</RootNamespace>
     <AssemblyVersion>0.3.2.0</AssemblyVersion>
     <FileVersion>0.3.2.0</FileVersion>
-    <Copyright>Copyright © Christian Hermann 2015 - 2018</Copyright>
+    <Copyright>Copyright © Christian Hermann 2015 - 2019</Copyright>
     <PackageId>diskdetector-net</PackageId>
-    <Version>0.3.2</Version>
+    <Version>0.3.3</Version>
     <PackageLicenseUrl>https://github.com/bitbeans/diskdetector-net/blob/master/LICENSE.md</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/bitbeans/diskdetector-net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bitbeans/diskdetector-net</RepositoryUrl>
     <PackageTags>disk detection hdd ssd driveinfo</PackageTags>
     <Product>diskdetector-net</Product>
     <Company />
-    <Authors>Christian Hermann</Authors>
+    <Authors>Christian Hermann &amp; Contributors</Authors>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Class to detect the hardware type (SSD or HDD) of a hard disk on windows based systems.</Description>
   </PropertyGroup>

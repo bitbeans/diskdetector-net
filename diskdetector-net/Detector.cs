@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
@@ -409,6 +410,7 @@ namespace DiskDetector
             out uint lpBytesReturned,
             IntPtr lpOverlapped);
 
+
         /// <summary>
         ///     Gets the device ID by drive letter.
         /// </summary>
@@ -438,8 +440,11 @@ namespace DiskDetector
 
             if (hDrive == null || hDrive.IsInvalid)
             {
+                int lastError = Marshal.GetLastWin32Error();
                 throw new DetectionFailedException(string.Format("Could not detect Disk Id of {0}",
-                    driveLetter));
+                    driveLetter),
+                    new Win32Exception(lastError)
+                    );
             }
 
             var ioctlVolumeGetVolumeDiskExtents = CTL_CODE(
@@ -463,11 +468,19 @@ namespace DiskDetector
 
             hDrive.Close();
 
-            if (queryDiskExtentsResult == false ||
-                queryDiskExtents.Extents.Length != 1)
+            if (!queryDiskExtentsResult)
             {
-                throw new DetectionFailedException(string.Format("Could not detect Disk Id of {0}",
-                    driveLetter));
+                int lastError = Marshal.GetLastWin32Error();
+                const int ERROR_MORE_DATA = 234; //(0xEA) More data is available.
+                if (lastError != ERROR_MORE_DATA
+                    || (queryDiskExtents.Extents.Length < 1)    // We need at least 1
+                )
+                {
+                    throw new DetectionFailedException(string.Format("Could not detect Disk Id of {0}",
+                            driveLetter),
+                        new Win32Exception(lastError)
+                    );
+                }
             }
 
             return (int) queryDiskExtents.Extents[0].DiskNumber;
@@ -683,8 +696,11 @@ The specified device name is invalid.*/
 
             if (hDrive == null || hDrive.IsInvalid)
             {
+                int lastError = Marshal.GetLastWin32Error();
                 throw new DetectionFailedException(string.Format("Could not detect SeekPenalty of {0}",
-                    physicalDriveName));
+                    physicalDriveName),
+                    new Win32Exception(lastError)
+                    );
             }
 
             var ioctlStorageQueryProperty = CTL_CODE(
@@ -717,8 +733,11 @@ The specified device name is invalid.*/
 
             if (querySeekPenaltyResult == false)
             {
+                int lastError = Marshal.GetLastWin32Error();
                 throw new DetectionFailedException(string.Format("Could not detect SeekPenalty of {0}",
-                    physicalDriveName));
+                    physicalDriveName),
+                    new Win32Exception(lastError)
+                    );
             }
             if (querySeekPenaltyDesc.IncursSeekPenalty == false)
             {
@@ -749,8 +768,11 @@ The specified device name is invalid.*/
 
             if (hDrive == null || hDrive.IsInvalid)
             {
+                int lastError = Marshal.GetLastWin32Error();
                 throw new DetectionFailedException(string.Format("Could not detect NominalMediaRotationRate of {0}",
-                    physicalDriveName));
+                    physicalDriveName),
+                    new Win32Exception(lastError)
+                    );
             }
 
             var ioctlAtaPassThrough = CTL_CODE(
@@ -786,8 +808,11 @@ The specified device name is invalid.*/
 
             if (result == false)
             {
+                int lastError = Marshal.GetLastWin32Error();
                 throw new DetectionFailedException(string.Format("Could not detect NominalMediaRotationRate of {0}",
-                    physicalDriveName));
+                    physicalDriveName),
+                    new Win32Exception(lastError)
+                    );
             }
             // Word index of nominal media rotation rate
             // (1 means non-rotate device)
